@@ -8,56 +8,43 @@ Data Visualization - PowerBI
 
 What is the gender breakdown of employees in the company?
 
+```
 SELECT
 gender, count(gender) as count
 FROM hr_db.hr
 WHERE termdate = "0000-00-00" AND age >= 18
 GROUP BY gender;
-
-Output :
-
-Male 8911
-Female 8090
-Non-Conforming 481
+```
 
 ---
 
 what is the race/ethnicity breakdown in the company?
 
+```
 SELECT
 race, count(race) as count
 FROM hr_db.hr
 WHERE termdate = "0000-00-00" AND age >= 18
 GROUP BY race
 ORDER BY count(race) DESC;
-
-Output :
-
-White 4987
-Two or More Races 2867
-Black or African American 2840
-Asian 2791
-Hispanic or Latino 1994
-American Indian or Alaska Native 1051
-Native Hawaiian or Other Pacific Islander 952
+```
 
 ---
 
 what is the age distribution of employees ?
 
--- understand the stats
+- understand the stats
 
+```
 SELECT
 MIN(age) AS min_age, MAX(age) AS max_age
 FROM hr_db.hr
 WHERE age >= 18 AND termdate = "0000-00-00";
+```
 
-Output :
+- use the stats to create age groups
 
-21 58
-
--- use the stats to create age groups
-
+```
 SELECT
 CASE
 WHEN age >=18 AND age <=24 THEN "18-24"
@@ -72,17 +59,11 @@ FROM hr_db.hr
 WHERE age >= 18 AND termdate = "0000-00-00"
 GROUP BY age_group
 ORDER BY age_group;
+```
 
-OUTPUT :
+- add gender information as well
 
-18-24 1938
-25-34 4969
-35-44 4992
-45-54 4688
-55-64 895
-
--- add gender information as well
-
+```
 SELECT
 CASE
 WHEN age >=18 AND age <=24 THEN "18-24"
@@ -98,44 +79,25 @@ FROM hr_db.hr
 WHERE age >= 18 AND termdate = "0000-00-00"
 GROUP BY age_group, gender
 ORDER BY age_group, gender;
-
-OUTPUT :
-
-18-24 Female 880
-18-24 Male 1009
-18-24 Non-Conforming 49
-25-34 Female 2352
-25-34 Male 2481
-25-34 Non-Conforming 136
-35-44 Female 2233
-35-44 Male 2620
-35-44 Non-Conforming 139
-45-54 Female 2187
-45-54 Male 2368
-45-54 Non-Conforming 133
-55-64 Female 438
-55-64 Male 433
-55-64 Non-Conforming 24
+```
 
 ---
 
 How many employees work at HQ vs REMOTE
 
+```
 SELECT
 location, COUNT(location) AS count
 FROM hr_db.hr
 WHERE age >= 18 AND termdate = "0000-00-00"
 GROUP BY location;
-
-OUTPUT :
-
-Headquarters 13107
-Remote 4375
+```
 
 ---
 
 What is the average length of employment for employees who have been terminated
 
+```
 SELECT
 hire_date, termdate, TIMESTAMPDIFF(YEAR, hire_date, termdate) AS diff
 FROM hr_db.hr
@@ -145,22 +107,26 @@ SELECT
 ROUND(AVG(TIMESTAMPDIFF(YEAR, hire_date, termdate)),2) AS avg_employment_length
 FROM hr_db.hr
 WHERE age >= 18 AND termdate != "0000-00-00" AND termdate <= CURRENT_DATE();
+```
 
 ---
 
 Gender Distribution across various department and job titles
 
+```
 SELECT
 department, gender, count(gender) AS count
 FROM hr_db.hr
 WHERE age >= 18 AND termdate = "0000-00-00"
 GROUP BY department, gender
 ORDER BY department;
+```
 
 ---
 
 Distribution of job title across the company
 
+```
 SELECT
 jobtitle, COUNT(jobtitle) AS COUNT
 FROM hr_db.hr
@@ -174,6 +140,7 @@ FROM hr_db.hr
 WHERE age >= 18 AND termdate = "0000-00-00"
 GROUP BY jobtitle, gender
 ORDER BY jobtitle DESC;
+```
 
 ---
 
@@ -189,6 +156,7 @@ the average number of employees for the year would be 75 (50+100=150, 150/2=75).
 If 15 employees left the organization that year,
 the turnover rate would be 20 percent (15/75 = 0.2, 0.2 x 100 = 20 percent).
 
+```
 WITH turnover AS (
 SELECT
 department,
@@ -203,22 +171,26 @@ SELECT
 \*, term_count / total_count AS term_rate
 FROM turnover
 ORDER BY term_rate DESC;
+```
 
 ---
 
 Distribution of employees across location [City / State]
 
+```
 SELECT
 location_state, COUNT(location_state) AS count
 FROM hr_db.hr
 WHERE age >= 18 and termdate = "0000-00-00"
 GROUP BY location_state
 ORDER BY count DESC;
+```
 
 ---
 
 How has employee count changed over time based on hire & termination dates
 
+```
 WITH employment AS (
 SELECT
 YEAR(hire_date) AS year,
@@ -237,16 +209,19 @@ SELECT
   total_hire - total_term AS netchange,
   ROUND(((total_hire - total_term)/total_hire) _ 100 ,2) AS netchange_per
   FROM employment;
+```
 
 ---
 
 What is the tenure distribution for each department
 
+```
 SELECT
 department,
 ROUND(AVG(TIMESTAMPDIFF(YEAR, hire_date, termdate)),0) AS avg_tenure
 FROM hr_db.hr
 WHERE age >= 18 AND termdate !="0000-00-00" AND termdate <= CURRENT_DATE()
 GROUP BY department
+```
 
 ---
