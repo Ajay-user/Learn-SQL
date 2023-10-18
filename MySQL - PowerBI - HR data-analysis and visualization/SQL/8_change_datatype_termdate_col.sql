@@ -1,0 +1,2 @@
+ALTER TABLE hr
+MODIFY COLUMN termdate DATE;

@@ -1,0 +1,2 @@
+UPDATE hr_db.hr
+SET age = TIMESTAMPDIFF(YEAR, birthdate, CURRENT_DATE());

@@ -1,0 +1,153 @@
+
+
+Create a database to store HR dataset
+CREATE DATABASE HR_DB
+...............................................................................................
+
+Change the column name from ï»¿id to emp_id
+ALTER TABLE hr_db.hr
+CHANGE ï»¿id emp_id VARCHAR(20) NULL;
+
+...............................................................................................
+
+check the data type of different fields 
+DESCRIBE hr_db.hr;
+...............................................................................................
+
+
+
+
+FIX Birthdate column
+
+- data type = text
+- date format in the birthdate column -- convert it to yyyy-mm-dd
+ - format mm/dd/yyyy
+ - format mm-dd-yyyy
+
+
+>> STR_TO_DATE
+The STR_TO_DATE() function returns a date based on a string and a format.
+SELECT STR_TO_DATE("August 10 2017", "%M %d %Y");
+
+>> wildcards
+There are two wildcards often used in conjunction with the LIKE operator:
+The percent sign (%) represents zero, one, or multiple characters
+The underscore sign (_) represents one, single character
+
+>> UPDATE statement
+The UPDATE statement is used to modify the existing records in a table.
+
+
+>> The DATE_FORMAT() function formats a date as specified.
+DATE_FORMAT(date, format)
+
+
+
+UPDATE table_name
+SET column1 = value1, column2 = value2, ...
+WHERE condition;
+
+
+
+UPDATE hr_db.hr
+SET birthdate = CASE
+		    WHEN birthdate LIKE "%/%" THEN DATE_FORMAT( STR_TO_DATE(birthdate, "%m/%d/%Y") ,  "%Y-%m-%d")
+                    WHEN birthdate LIKE "%-%" THEN DATE_FORMAT( STR_TO_DATE(birthdate, "%m-%d-%Y") ,  "%Y-%m-%d")
+                    ELSE NULL
+		END;
+
+
+
+
+
+...............................................................................................
+
+
+Change data-type of birthday column to DATE
+
+ALTER TABLE hr_db.hr
+MODIFY COLUMN birthdate DATE;
+
+...............................................................................................
+
+
+
+
+
+FIX hire_date column
+
+- data type = text
+- date format in the hire_date column -- convert it to yyyy-mm-dd
+ - format mm/dd/yyyy
+ - format mm-dd-yyyy
+
+
+
+UPDATE hr_db.hr
+SET hire_date = CASE 
+		WHEN hire_date LIKE "%/%" THEN DATE_FORMAT(STR_TO_DATE(hire_date, "%m/%d/%Y"), "%Y-%m-%d")
+                WHEN hire_date LIKE "%-%" THEN DATE_FORMAT(STR_TO_DATE(hire_date, "%m-%d-%Y"), "%Y-%m-%d")
+                ELSE NULL
+		END
+
+...............................................................................................
+
+Change data-type of hiredate column to DATE
+
+ALTER TABLE hr_db.hr
+MODIFY COLUMN hiredate DATE;
+
+...............................................................................................
+
+
+Fix termdate col
+change format from datetime to date
+
+
+UPDATE hr_db.hr
+SET termdate = DATE(STR_TO_DATE(termdate, "%Y-%m-%d %H:%i:%s UTC"))
+WHERE termdate IS NOT NULL AND termdate != " ";
+
+...............................................................................................
+
+
+Change data-type of termdate column to DATE
+
+ALTER TABLE hr_db.hr
+MODIFY COLUMN termdate DATE;
+
+...............................................................................................
+
+
+AGE Calculation
+
+TIMESTAMPDIFF() function
+MySQL the TIMESTAMPDIFF() returns a value after subtracting a datetime expression from another.
+
+The unit should be one of the following : 
+FRAC_SECOND (microseconds), SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, QUARTER, or YEAR.
+
+TIMESTAMPDIFF() is essential for time-based analysis by enabling you to measure the duration between events or actions.
+It's useful for calculating ages or durations, such as the age of a person based on their birthdate.
+TIMESTAMPDIFF() is used in time series analysis to calculate the time intervals between data points.
+
+TIMESTAMPDIFF(unit,datetime_expr1,datetime_expr2);
+
+
+
+UPDATE hr_db.hr
+SET age = TIMESTAMPDIFF(YEAR, birthdate, CURRENT_DATE());
+
+
+...............................................................................................
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,2 @@
+ALTER TABLE hr_db
+MODIFY COLUMN hiredate DATE

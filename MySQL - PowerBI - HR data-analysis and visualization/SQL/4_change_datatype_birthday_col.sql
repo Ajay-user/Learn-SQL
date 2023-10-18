@@ -1,0 +1,2 @@
+ALTER TABLE hr_db.hr
+MODIFY COLUMN birthdate DATE;
